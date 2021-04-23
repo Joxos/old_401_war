@@ -10,7 +10,7 @@ from PySide6 import QtWidgets
 
 def recvpkg(client: socket.socket) -> dict:
     # to receive a whole package
-    end_flag = b"EOP"
+    end_flag = "EOP"
     recieved = ""
     while end_flag not in recieved:
         recieved += client.recv(1024).decode()

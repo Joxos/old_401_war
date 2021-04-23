@@ -46,7 +46,7 @@ def register(username, password) -> bool:
 
 def recvpkg(client: socket.socket) -> dict:
     # to receive a whole package
-    end_flag = b"EOP"
+    end_flag = "EOP"
     recieved = ""
     while end_flag not in recieved:
         recieved += client.recv(1024).decode()
@@ -64,6 +64,7 @@ class Server:
     def __init__(self, host):
         self.host = host
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.threads = {}
 
     def start(self, listen):
