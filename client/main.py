@@ -19,7 +19,7 @@ def recvpkg(client: socket.socket) -> dict:
 
 def sendpkg(client: socket.socket, msg: dict):
     # to send a whole package
-    client.sendall(bytes(json.dumps(msg)))
+    client.sendall(bytes(json.dumps(msg), "utf-8"))
     client.send(b"EOP")
 
 
@@ -28,7 +28,7 @@ class MyWindow(QtWidgets.QWidget):
         super().__init__()
 
         # some useful variables
-        self.server_host = ("0.0.0.0", 1901)
+        self.server_host = ("119.29.79.204", 1901)
 
         # open welcome.ui
         self.ui_file = QtCore.QFile("welcome.ui")

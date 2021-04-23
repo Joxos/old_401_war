@@ -55,7 +55,7 @@ def recvpkg(client: socket.socket) -> dict:
 
 def sendpkg(client: socket.socket, msg: dict):
     # to send a whole package
-    client.sendall(bytes(json.dumps(msg)))
+    client.sendall(bytes(json.dumps(msg), "utf-8"))
     client.send(b"EOP")
 
 
