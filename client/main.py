@@ -52,6 +52,7 @@ class MyWindow(QtWidgets.QWidget):
         self.window.register_account.clicked.connect(self.register)
         self.window.login.clicked.connect(self.login)
         self.window.del_account.clicked.connect(self.delete)
+        self.window.dev_options.clicked.connect(self.dev_options_configuration)
 
     @QtCore.Slot()
     def sqp_say_sth(self):
@@ -122,6 +123,20 @@ class MyWindow(QtWidgets.QWidget):
             else:
                 Gui(["你被司普青又叫起来了。"],
                     ["（删除账号失败）"]).run()
+
+    @QtCore.Slot()
+    def dev_options_configuration(self):
+        gui = Gui(["开发者工具"],
+                  ["服务器IP：", "__ip__"],
+                  ["服务器端口号：", "__port__"],
+                  [["ensure"]])
+        gui.ip, gui.port = self.server_host
+
+        @gui.auto
+        def assign(gui, *args):
+            self.server_host = (gui.ip, int(gui.port))
+
+        gui.run()
 
 
 if __name__ == '__main__':

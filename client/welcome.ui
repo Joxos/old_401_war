@@ -254,7 +254,28 @@
     <bool>false</bool>
    </property>
   </widget>
+  <widget class="QPushButton" name="dev_options">
+   <property name="geometry">
+    <rect>
+     <x>660</x>
+     <y>420</y>
+     <width>75</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>开发者工具</string>
+   </property>
+  </widget>
  </widget>
+ <tabstops>
+  <tabstop>username_input</tabstop>
+  <tabstop>passwd_input</tabstop>
+  <tabstop>register_account</tabstop>
+  <tabstop>login</tabstop>
+  <tabstop>del_account</tabstop>
+  <tabstop>cheer</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
