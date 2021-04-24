@@ -68,48 +68,60 @@ class MyWindow(QtWidgets.QWidget):
         username = self.window.username_input.toPlainText()
         password = self.window.passwd_input.toPlainText()
         server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        server.connect(self.server_host)
-        sendpkg(server, {"status": "register", "username": username,
-                         "password": hashlib.sha512(bytes(password, 'utf-8')).hexdigest()})
-        package = recvpkg(server)
-        if package["status"] == "success":
-            Gui(["你起来了。"],
-                ["（注册成功）"]).run()
+        try:
+            server.connect(self.server_host)
+        except ConnectionRefusedError:
+            Gui(["服务器起不来了！"]).run()
         else:
-            Gui(["你起不来。"],
-                ["（注册失败）"]).run()
+            sendpkg(server, {"status": "register", "username": username,
+                             "password": hashlib.sha512(bytes(password, 'utf-8')).hexdigest()})
+            package = recvpkg(server)
+            if package["status"] == "success":
+                Gui(["你起来了。"],
+                    ["（注册成功）"]).run()
+            else:
+                Gui(["你起不来。"],
+                    ["（注册失败）"]).run()
 
     @QtCore.Slot()
     def login(self):
         username = self.window.username_input.toPlainText()
         password = self.window.passwd_input.toPlainText()
         server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        server.connect(self.server_host)
-        sendpkg(server, {"status": "login", "username": username,
-                         "password": hashlib.sha512(bytes(password, 'utf-8')).hexdigest()})
-        package = recvpkg(server)
-        if package["status"] == "success":
-            Gui(["你要去饭堂？饭堂还没开mer呢！"],
-                ["（游戏正在开发中）"]).run()
+        try:
+            server.connect(self.server_host)
+        except ConnectionRefusedError:
+            Gui(["服务器起不来了！"]).run()
         else:
-            Gui(["你被司普青拦住了：“现在还没到时间。”"],
-                ["（注册失败）"]).run()
+            sendpkg(server, {"status": "login", "username": username,
+                             "password": hashlib.sha512(bytes(password, 'utf-8')).hexdigest()})
+            package = recvpkg(server)
+            if package["status"] == "success":
+                Gui(["你要去饭堂？饭堂还没开mer呢！"],
+                    ["（游戏正在开发中）"]).run()
+            else:
+                Gui(["你被司普青拦住了：“现在还没到时间。”"],
+                    ["（注册失败）"]).run()
 
     @QtCore.Slot()
     def delete(self):
         username = self.window.username_input.toPlainText()
         password = self.window.passwd_input.toPlainText()
         server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        server.connect(self.server_host)
-        sendpkg(server, {"status": "delete", "username": username,
-                         "password": hashlib.sha512(bytes(password, 'utf-8')).hexdigest()})
-        package = recvpkg(server)
-        if package["status"] == "success":
-            Gui(["你又睡下了。"],
-                ["（删除账号成功）"]).run()
+        try:
+            server.connect(self.server_host)
+        except ConnectionRefusedError:
+            Gui(["服务器起不来了！"]).run()
         else:
-            Gui(["你被司普青又叫起来了。"],
-                ["（删除账号失败）"]).run()
+            sendpkg(server, {"status": "delete", "username": username,
+                             "password": hashlib.sha512(bytes(password, 'utf-8')).hexdigest()})
+            package = recvpkg(server)
+            if package["status"] == "success":
+                Gui(["你又睡下了。"],
+                    ["（删除账号成功）"]).run()
+            else:
+                Gui(["你被司普青又叫起来了。"],
+                    ["（删除账号失败）"]).run()
 
 
 if __name__ == '__main__':
