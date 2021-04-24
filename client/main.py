@@ -1,3 +1,4 @@
+import hashlib
 import json
 import random
 import socket
@@ -28,7 +29,7 @@ class MyWindow(QtWidgets.QWidget):
         super().__init__()
 
         # some useful variables
-        self.server_host = ("119.29.79.204", 1901)
+        self.server_host = ("127.0.0.1", 1901)
 
         # open welcome.ui
         self.ui_file = QtCore.QFile("welcome.ui")
@@ -58,7 +59,6 @@ class MyWindow(QtWidgets.QWidget):
             "起起起！",
             "起不来都是借口。",
             "没完了是吧？！",
-            "你没签？那你漏了啊！",
             "没完了在哪里！"
         ]))
 
@@ -68,7 +68,8 @@ class MyWindow(QtWidgets.QWidget):
         password = self.window.passwd_input.toPlainText()
         server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         server.connect(self.server_host)
-        sendpkg(server, {"status": "register", "username": username, "password": password})
+        sendpkg(server, {"status": "register", "username": username,
+                         "password": hashlib.sha512(bytes(password, 'utf-8')).hexdigest()})
         package = recvpkg(server)
         if package["status"] == "success":
             print("Right!")
@@ -81,7 +82,8 @@ class MyWindow(QtWidgets.QWidget):
         password = self.window.passwd_input.toPlainText()
         server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         server.connect(self.server_host)
-        sendpkg(server, {"status": "login", "username": username, "password": password})
+        sendpkg(server, {"status": "login", "username": username,
+                         "password": hashlib.sha512(bytes(password, 'utf-8')).hexdigest()})
         package = recvpkg(server)
         if package["status"] == "success":
             print("Right!")
@@ -94,7 +96,8 @@ class MyWindow(QtWidgets.QWidget):
         password = self.window.passwd_input.toPlainText()
         server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         server.connect(self.server_host)
-        sendpkg(server, {"status": "delete", "username": username, "password": password})
+        sendpkg(server, {"status": "delete", "username": username,
+                         "password": hashlib.sha512(bytes(password, 'utf-8')).hexdigest()})
         package = recvpkg(server)
         if package["status"] == "success":
             print("Right!")
