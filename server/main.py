@@ -73,7 +73,7 @@ class Server:
     def __init__(self, host):
         self.host = host
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        print("Setting up the server socket...", end='')
+        print("[*] Setting up the server socket...", end='')
         self.server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         print("Done!")
         self.threads = {}
@@ -83,18 +83,18 @@ class Server:
         try:
             self.server_socket.bind(self.host)
         except OSError:
-            print("[!] The port is already in use.")
+            print("[!] Port {} is already in use.".format(self.host[1]))
             sys.exit(0)
-        print("[*] Port binding successfully.")
+        print("[*] Port {} binded successfully.".format(self.host[1]))
         try:
             self.server_socket.listen(1)
         except socket.error:
-            print("[!] Failed to listen at the port.")
+            print("[!] Failed to listen at port {}.".format(self.host[1]))
             sys.exit(1)
 
         # start listening
         self.server_socket.listen(listen)
-        print("[*] Successfully listen at the port.")
+        print("[*] Successfully listen at port {}.".format(self.host[1]))
         print("[*] Waiting for connection...")
 
         # main loop of listening
