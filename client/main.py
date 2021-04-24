@@ -7,7 +7,7 @@ import sys
 from PySide6 import QtCore
 from PySide6 import QtUiTools
 from PySide6 import QtWidgets
-from guietta import Gui
+from guietta import Gui, _
 
 
 def recvpkg(client: socket.socket) -> dict:
@@ -124,6 +124,9 @@ class MyWindow(QtWidgets.QWidget):
                 Gui(["你被司普青又叫起来了。"],
                     ["（删除账号失败）"]).run()
 
+    def assingment(self, gui, *args):
+        self.server_host = (gui.ip, int(gui.port))
+
     @QtCore.Slot()
     def dev_options_configuration(self):
         gui = Gui(["开发者工具"],
@@ -131,11 +134,10 @@ class MyWindow(QtWidgets.QWidget):
                   ["服务器端口号：", "__port__"],
                   [["ensure"]])
         gui.ip, gui.port = self.server_host
-
-        @gui.auto
-        def assign(gui, *args):
-            self.server_host = (gui.ip, int(gui.port))
-
+        gui.events([_],
+                   [_, _],
+                   [_, _],
+                   [self.assingment])
         gui.run()
 
 
