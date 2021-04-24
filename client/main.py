@@ -7,6 +7,7 @@ import sys
 from PySide6 import QtCore
 from PySide6 import QtUiTools
 from PySide6 import QtWidgets
+from guietta import Gui
 
 
 def recvpkg(client: socket.socket) -> dict:
@@ -72,9 +73,11 @@ class MyWindow(QtWidgets.QWidget):
                          "password": hashlib.sha512(bytes(password, 'utf-8')).hexdigest()})
         package = recvpkg(server)
         if package["status"] == "success":
-            print("Right!")
+            Gui(["你起来了。"],
+                ["（注册成功）"]).run()
         else:
-            print("Failed!")
+            Gui(["你起不来。"],
+                ["（注册失败）"]).run()
 
     @QtCore.Slot()
     def login(self):
@@ -86,9 +89,11 @@ class MyWindow(QtWidgets.QWidget):
                          "password": hashlib.sha512(bytes(password, 'utf-8')).hexdigest()})
         package = recvpkg(server)
         if package["status"] == "success":
-            print("Right!")
+            Gui(["你要去饭堂？饭堂还没开mer呢！"],
+                ["（游戏正在开发中）"]).run()
         else:
-            print("Failed!")
+            Gui(["你被司普青拦住了：“现在还没到时间。”"],
+                ["（注册失败）"]).run()
 
     @QtCore.Slot()
     def delete(self):
@@ -100,9 +105,11 @@ class MyWindow(QtWidgets.QWidget):
                          "password": hashlib.sha512(bytes(password, 'utf-8')).hexdigest()})
         package = recvpkg(server)
         if package["status"] == "success":
-            print("Right!")
+            Gui(["你又睡下了。"],
+                ["（删除账号成功）"]).run()
         else:
-            print("Failed!")
+            Gui(["你被司普青又叫起来了。"],
+                ["（删除账号失败）"]).run()
 
 
 if __name__ == '__main__':
