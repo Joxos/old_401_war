@@ -39,11 +39,15 @@ class MyWindow(QtWidgets.QWidget):
         self.window.del_account.clicked.connect(self.delete)
         self.window.dev_options.clicked.connect(self.dev_options_configuration)
 
+    @QtCore.Slot()
     async def auth(self, auth_type):
         """Get and authoricate the account information."""
-        reader, writer = await asyncio.open_connection(self.server_host[0], self.server_host[1])
         username = self.window.username_input.toPlainText()
         password = self.window.passwd_input.toPlainText()
+        try:
+            reader, writer = await asyncio.open_connection(self.server_host[0], self.server_host[1])
+        except ConnectionRefusedError:
+            self.window.spq_word.setText("服务器起不来了！")
         writer.write(json.dumps({"status": auth_type, "username": username,
                                  "password": hashlib.sha512(bytes(password, "utf-8")).hexdigest()}).encode("utf-8"))
         data = await reader.read(1000)
@@ -52,24 +56,18 @@ class MyWindow(QtWidgets.QWidget):
         # give a message to the user
         if package['status'] == "success":
             if auth_type == "register":
-                Gui(["你起来了。"],
-                    ["（注册成功）"]).run()
+                self.window.spq_word.setText("你起来了。（注册成功）")
             elif auth_type == "login":
-                Gui(["你要去饭堂？饭堂还没开mer呢！"],
-                    ["（游戏正在开发中）"]).run()
+                self.window.spq_word.setText("你要去饭堂？饭堂还没开mer呢！（游戏正在开发中）")
             elif auth_type == "delete":
-                Gui(["你又睡下了。"],
-                    ["（删除账号成功）"]).run()
+                self.window.spq_word.setText("你又睡下了。（删除账号成功）")
         elif package['status'] == "failed":
             if auth_type == "register":
-                Gui(["你起不来。"],
-                    ["（注册失败）"]).run()
+                self.window.spq_word.setText("你起不来。（注册失败）")
             elif auth_type == "login":
-                Gui(["你被司普青拦住了：“现在还没到点。”"],
-                    ["（登陆失败）"]).run()
+                self.window.spq_word.setText("你被司普青拦住了：“现在还没到点。”（登陆失败）")
             elif auth_type == "delete":
-                Gui(["你被司普青又叫起来了。"],
-                    ["（删除账号失败）"]).run()
+                self.window.spq_word.setText("你被司普青又叫起来了。（删除账号失败）")
 
     @QtCore.Slot()
     def sqp_say_sth(self):
@@ -97,8 +95,9 @@ class MyWindow(QtWidgets.QWidget):
         """Delete the account in the remote."""
         asyncio.run(self.auth("delete"))
 
-    def assingment(self, gui, *args):
+    def assingment(self, gui: Gui, *args):
         self.server_host = (gui.ip, int(gui.port))
+        gui.close()
 
     @QtCore.Slot()
     def dev_options_configuration(self):
@@ -115,7 +114,6 @@ class MyWindow(QtWidgets.QWidget):
 
 
 if __name__ == '__main__':
-    # initialize the application
     app = QtWidgets.QApplication(sys.argv)
 
     window = MyWindow()

@@ -51,21 +51,6 @@ def register(username, password) -> bool:
             return True
 
 
-# def recvpkg(client: socket.socket) -> dict:
-#     # to receive a whole package
-#     end_flag = "EOP"
-#     recieved = ""
-#     while end_flag not in recieved:
-#         recieved += client.recv(1024).decode()
-#     return json.loads(recieved[:-3])
-#
-#
-# def sendpkg(client: socket.socket, msg: dict):
-#     # to send a whole package
-#     client.sendall(bytes(json.dumps(msg), "utf-8"))
-#     client.send(b"EOP")
-
-
 async def auth(reader, writer):
     data = await reader.read(1000)
     package = json.loads(data.decode())
@@ -106,75 +91,3 @@ async def main():
 
 
 asyncio.run(main())
-
-# class Server:
-#
-#     def __init__(self, host):
-#         self.host = host
-#         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-#         print("[*] Setting up the server socket...", end='')
-#         self.server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-#         print("Done!")
-#         self.threads = {}
-#
-#     def start(self, listen):
-#         # self check
-#         try:
-#             self.server_socket.bind(self.host)
-#         except OSError:
-#             print("[!] Port {} is already in use.".format(self.host[1]))
-#             sys.exit(0)
-#         print("[*] Port {} binded successfully.".format(self.host[1]))
-#         try:
-#             self.server_socket.listen(1)
-#         except socket.error:
-#             print("[!] Failed to listen at port {}.".format(self.host[1]))
-#             sys.exit(1)
-#
-#         # start listening
-#         self.server_socket.listen(listen)
-#         print("[*] Successfully listen at port {}.".format(self.host[1]))
-#         print("[*] Waiting for connection...")
-#
-#         # main loop of listening
-#         try:
-#             while True:
-#                 client, address = self.server_socket.accept()
-#                 print("[*] Accept connection from {}:{}".format(address[0], address[1]))
-#                 client_handler = threading.Thread(target=self.main, args=(client,))
-#                 client_handler.start()
-#                 self.threads[client] = client_handler
-#         except KeyboardInterrupt:
-#             print("[*] User exit.")
-#
-#     def main(self, client):
-#         # main logic of the game
-#         package = recvpkg(client)
-#         if package['status'] == "register":
-#             # register the user
-#             success = register(package['username'], package['password'])
-#             if success:
-#                 sendpkg(client, {"status": "success"})
-#             else:
-#                 sendpkg(client, {"status": "failed"})
-#         elif package['status'] == "login":
-#             # login and play
-#             success = login(package['username'], package['password'])
-#             if success:
-#                 sendpkg(client, {"status": "success"})
-#                 # play
-#             else:
-#                 sendpkg(client, {"status": "failed"})
-#         elif package['status'] == "delete":
-#             # delete the user
-#             success = delete(package['username'], package['password'])
-#             if success:
-#                 sendpkg(client, {"status": "success"})
-#             else:
-#                 sendpkg(client, {"status": "failed"})
-#
-#
-# if __name__ == "__main__":
-#     # startup the server
-#     server = Server(("0.0.0.0", 1901))
-#     server.start(5)
